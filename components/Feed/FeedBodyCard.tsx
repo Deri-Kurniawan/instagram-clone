@@ -2,7 +2,8 @@ import React, { Fragment, useEffect, useState } from "react";
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
 import { Link } from "expo-router";
-import { PostsProps, UserProps, useGlobal } from "../../providers/GlobalProvider";
+import { CommentsProps, PostsProps, UserProps, useGlobal } from "../../providers/GlobalProvider";
+import FeedBodyComment from "./FeedBodyComment";
 
 const watchTimePassedOut = (createdAt: any) => {
     if (!createdAt) return "0 seconds ago";
@@ -57,6 +58,34 @@ const watchTimePassedOut = (createdAt: any) => {
     return formattedDate;
 };
 
+export const captionWithLinks = (caption: string) => {
+    const hashtagRegex = /#[\w]+/g;
+    const mentionRegex = /@[\w]+/g;
+    const whitespaceRegex = /\s/g;
+
+    return caption.split(" ").map((word, index) => {
+        let href = null;
+        if (word.match(hashtagRegex)) {
+            href = {
+                pathname: "/hashtags/detail",
+                params: { username: word.slice(1) },
+            }
+        } else if (word.match(mentionRegex)) {
+            href = {
+                pathname: "/users/profile",
+                params: { hashtagname: word.slice(1) },
+            }
+        }
+
+        return href ? (
+            <Link href={href} key={index} style={{ color: "#097ACA" }}>{word.replace(whitespaceRegex, "")}{" "}</Link>
+        ) : (
+            <React.Fragment key={index}>{word} </React.Fragment>
+        );
+    });
+};
+
+
 export default function FeedBodyCard(props: PostsProps) {
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const [scaleLikeButtonValue] = useState(new Animated.Value(1));
@@ -103,33 +132,6 @@ export default function FeedBodyCard(props: PostsProps) {
 
     const animatedStyle = {
         transform: [{ scale: scaleLikeButtonValue }],
-    };
-
-    const captionWithLinks = (caption: string) => {
-        const hashtagRegex = /#[\w]+/g;
-        const mentionRegex = /@[\w]+/g;
-        const whitespaceRegex = /\s/g;
-
-        return caption.split(" ").map((word, index) => {
-            let href = null;
-            if (word.match(hashtagRegex)) {
-                href = {
-                    pathname: "/hashtags/detail",
-                    params: { username: word.slice(1) },
-                }
-            } else if (word.match(mentionRegex)) {
-                href = {
-                    pathname: "/users/profile",
-                    params: { hashtagname: word.slice(1) },
-                }
-            }
-
-            return href ? (
-                <Link href={href} key={index} style={{ color: "#097ACA" }}>{word.replace(whitespaceRegex, "")}{" "}</Link>
-            ) : (
-                <React.Fragment key={index}>{word} </React.Fragment>
-            );
-        });
     };
 
     useEffect(() => {
@@ -349,6 +351,30 @@ export default function FeedBodyCard(props: PostsProps) {
                             )}
                         </Text>
                     </Text>
+                )}
+                {props.comments.length > 2 ? (
+                    <View style={{ marginTop: 4 }}>
+                        <Link
+                            style={{ fontWeight: "bold", color: "#8e8e8e" }}
+                            href={{
+                                pathname: "/posts/comments",
+                                params: { id: props.id },
+                            }}
+                        >
+                            View all {props.comments.length} comments
+                        </Link>
+                    </View>
+                ) : (
+                    <>
+                        {props.comments.length > 0 && (
+                            <View style={{ flexDirection: "column", marginTop: 6 }}>
+                                {props.comments.map((comment: CommentsProps, index) => (
+                                    <FeedBodyComment key={index.toString()} {...comment} />
+                                ))}
+                            </View>
+
+                        )}
+                    </>
                 )}
                 <Text style={{ fontSize: 9.8, color: "#8e8e8e", marginTop: 6 }}>
                     {formattedCreatedAt}
