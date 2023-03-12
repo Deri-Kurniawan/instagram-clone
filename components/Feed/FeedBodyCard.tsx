@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
 import { Link } from "expo-router";
-import { PostsProps, UserProps } from "../../providers/GlobalProvider";
+import { PostsProps, UserProps, useGlobal } from "../../providers/GlobalProvider";
 
 const watchTimePassedOut = (createdAt: any) => {
     if (!createdAt) return "0 seconds ago";
@@ -64,6 +64,26 @@ export default function FeedBodyCard(props: PostsProps) {
     const [formattedCreatedAt, setFormattedCreatedAt] = useState<string>("");
     const [dynamicCaption, setDynamicCaption] = useState<string>("");
 
+    const handleLike = () => {
+        setIsLiked(!isLiked);
+    };
+
+    const handlePressComment = () => {
+        console.log("comment");
+    }
+
+    const handlePressShare = () => {
+        console.log("share");
+    }
+
+    const handlePressSave = () => {
+        console.log("save");
+    }
+
+    const handlePressCaptionTruncate = () => {
+        setCaptionIsTruncated(false);
+    };
+
     const handlePressIn = () => {
         Animated.spring(scaleLikeButtonValue, {
             toValue: 0.1,
@@ -74,8 +94,9 @@ export default function FeedBodyCard(props: PostsProps) {
     const handlePressOut = () => {
         Animated.spring(scaleLikeButtonValue, {
             toValue: 1,
-            friction: 6,
-            tension: 400,
+            friction: 4,
+            tension: 40,
+            velocity: 0,
             useNativeDriver: true,
         }).start();
     };
@@ -104,9 +125,7 @@ export default function FeedBodyCard(props: PostsProps) {
             }
 
             return href ? (
-                <Link href={href} key={index} style={{ color: "#097ACA" }}>
-                    {word.replace(whitespaceRegex, "")}{" "}
-                </Link>
+                <Link href={href} key={index} style={{ color: "#097ACA" }}>{word.replace(whitespaceRegex, "")}{" "}</Link>
             ) : (
                 <React.Fragment key={index}>{word} </React.Fragment>
             );
@@ -163,10 +182,7 @@ export default function FeedBodyCard(props: PostsProps) {
                             alignItems: "center",
                             height: "100%",
                         }}
-                        onPress={() => {
-                            setIsLiked((prev) => !prev);
-                            console.log("like");
-                        }}
+                        onPress={handleLike}
                     >
                         <Animated.View style={animatedStyle}>
                             <AntDesign
@@ -186,7 +202,7 @@ export default function FeedBodyCard(props: PostsProps) {
                             alignItems: "center",
                             height: "100%",
                         }}
-                        onPress={() => console.log("comment")}
+                        onPress={handlePressComment}
                     >
                         <Image
                             style={{
@@ -208,7 +224,7 @@ export default function FeedBodyCard(props: PostsProps) {
                             alignItems: "center",
                             height: "100%",
                         }}
-                        onPress={() => console.log("share")}
+                        onPress={handlePressShare}
                     >
                         <Image
                             style={{
@@ -231,7 +247,7 @@ export default function FeedBodyCard(props: PostsProps) {
                         width: 40,
                     }}
                     activeOpacity={0.5}
-                    onPress={() => console.log("save")}
+                    onPress={handlePressSave}
                 >
                     <FontAwesome name="bookmark-o" size={26} color="black" />
                 </TouchableOpacity>
@@ -321,7 +337,7 @@ export default function FeedBodyCard(props: PostsProps) {
                                     {props.caption.length > 150 && (
                                         <Text
                                             style={{ color: "#8e8e8e" }}
-                                            onPress={() => setCaptionIsTruncated(false)}
+                                            onPress={handlePressCaptionTruncate}
                                         >
                                             {" "}
                                             ... more
