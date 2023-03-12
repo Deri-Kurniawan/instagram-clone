@@ -60,13 +60,14 @@ const watchTimePassedOut = (createdAt: any) => {
 
 export default function FeedBodyCard(props: PostsProps) {
     const [isLiked, setIsLiked] = useState<boolean>(false);
+    const [isSaved, setIsSaved] = useState<boolean>(false);
     const [scaleLikeButtonValue] = useState(new Animated.Value(1));
     const [captionIsTruncated, setCaptionIsTruncated] = useState<boolean>(true);
     const [formattedCreatedAt, setFormattedCreatedAt] = useState<string>("");
     const [dynamicCaption, setDynamicCaption] = useState<string>("");
 
     const handleLike = () => {
-        setIsLiked(!isLiked);
+        setIsLiked(prev => !prev);
     };
 
     const handlePressComment = () => {
@@ -78,7 +79,7 @@ export default function FeedBodyCard(props: PostsProps) {
     }
 
     const handlePressSave = () => {
-        console.log("save");
+        setIsSaved(prev => !prev);
     }
 
     const handlePressCaptionTruncate = () => {
@@ -249,10 +250,10 @@ export default function FeedBodyCard(props: PostsProps) {
                         alignItems: "center",
                         width: 40,
                     }}
-                    activeOpacity={0.5}
+                    activeOpacity={1}
                     onPress={handlePressSave}
                 >
-                    <FontAwesome name="bookmark-o" size={26} color="black" />
+                    <FontAwesome name={isSaved ? "bookmark" : "bookmark-o"} size={26} color="black" />
                 </TouchableOpacity>
             </View>
 
