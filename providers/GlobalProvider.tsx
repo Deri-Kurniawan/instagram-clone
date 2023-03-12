@@ -19,6 +19,7 @@ export interface PostsProps {
     caption: string,
     likes: number,
     comments: number,
+    createdAt: string,
 }
 
 
@@ -109,18 +110,20 @@ export const GlobalProvider = ({ children }) => {
         author: users[0],
         pictures: ["https://scontent-xsp1-1.cdninstagram.com/v/t51.2885-15/293370319_1451695218593271_7055299281991302180_n.webp?stp=dst-jpg_e35&_nc_ht=scontent-xsp1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=fZzqK6XhbP8AX81I8Td&edm=ACWDqb8BAAAA&ccb=7-5&ig_cache_key=Mjg4MTYwODA4MTAwNDg4NzMzOA%3D%3D.2-ccb7-5&oh=00_AfB2DpWy-DeS_GdmA7BjFQ9idVNWfulyKBizAFCcLdQX0g&oe=6411BB4C&_nc_sid=1527a3"],
         location: "Puncak Habibie, Pelabuhan Ratu",
-        caption: "Hello From User 0",
+        caption: "Wazzup!👋 Gimana kabarnya? \nAku mau cerita nih tentang liburan aku yang seru banget di Puncak Habibie dan Sawarna! 🤩\n\nJadi, di Puncak Habibie kita naik gunung bareng-bareng dan menyaksikan sunrise yang keren banget! 🌄🌞\n\nTerus di Sawarna, kita main pasir pantai dan makan makanan enak di pinggir laut! 🏖️🍴\n\nSeru banget lah pokoknya! 🤘\n\nMakanya nih, aku mau kasih shoutout buat bersama pacar ku @ranin00_ yang udah bikin liburan ini seru banget! 👏\n\nKalian udah pernah ke Puncak Habibie atau Sawarna? \n\nKalo belum, buruan deh planing buat kesana! 😍 \n\nJangan lupa tag aku ya kalo udah kesana! 📷👀 \n\n#PuncakHabibie #Sawarna #SerunyaLiburanBersamaPacar #Sunrise #PantaiIndonesia #IndonesiaJuara",
         likes: 0,
         comments: 0,
+        createdAt: "2023-03-12T10:58:00.000Z",
     },
     {
         id: "6",
         author: users[5],
         pictures: ["https://instagram.fbdo9-1.fna.fbcdn.net/v/t51.2885-15/334028216_142406412071953_5589402918466715935_n.jpg?stp=dst-jpg_e35&_nc_ht=instagram.fbdo9-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=CMaizLUIsZIAX-3vkQp&edm=ACWDqb8BAAAA&ccb=7-5&ig_cache_key=MzA1MDk1ODIxMDAwMjE5MjYyOA%3D%3D.2-ccb7-5&oh=00_AfDzaJLKnbxIVk4a6yrjDU9jbFOJQbby2VKoNRrOoY-vnQ&oe=64118A57&_nc_sid=1527a3", "https://instagram.fbdo9-1.fna.fbcdn.net/v/t51.2885-15/331124941_144100304923381_5444072805535340072_n.jpg?stp=dst-jpg_e35&_nc_ht=instagram.fbdo9-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=8awnHo0Td_sAX9kBXZj&edm=ACWDqb8BAAAA&ccb=7-5&ig_cache_key=MzA1MDk1ODIxMDE1MzA4MTUzNw%3D%3D.2-ccb7-5&oh=00_AfAmRV5OR6hIWToFvEWlq5ubXt99rdrpMSZHA4Kxc09Q1Q&oe=641158F3&_nc_sid=1527a3"],
         location: "",
-        caption: "",
+        caption: "Hello world @deri561",
         likes: 0,
         comments: 0,
+        createdAt: "2021-05-01T00:00:00.000Z",
     },
     {
         id: "2",
@@ -130,6 +133,7 @@ export const GlobalProvider = ({ children }) => {
         caption: "",
         likes: 0,
         comments: 0,
+        createdAt: "2021-05-01T00:00:00.000Z",
     }, {
         id: "3",
         author: users[2],
@@ -138,6 +142,7 @@ export const GlobalProvider = ({ children }) => {
         caption: "",
         likes: 0,
         comments: 0,
+        createdAt: "2021-05-01T00:00:00.000Z",
     }, {
         id: "4",
         author: users[3],
@@ -146,6 +151,7 @@ export const GlobalProvider = ({ children }) => {
         caption: "",
         likes: 0,
         comments: 0,
+        createdAt: "2021-05-01T00:00:00.000Z",
     }, {
         id: "5",
         author: users[4],
@@ -154,6 +160,7 @@ export const GlobalProvider = ({ children }) => {
         caption: "",
         likes: 0,
         comments: 0,
+        createdAt: "2021-05-01T00:00:00.000Z",
     }
     ]);
 
