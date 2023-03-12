@@ -10,7 +10,7 @@ export default function FeedCard(post: PostsProps) {
         <>
             <FeedHeaderCard {...post} />
             <FeedPicturesCard pictures={post.pictures} />
-            <FeedBodyCard author={post.author} likes={post.likes} caption={post.caption} comments={post.comments} createdAt={post.createdAt} />
+            <FeedBodyCard {...post} />
         </>
     )
 }
