@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
 import { Link } from "expo-router";
@@ -66,25 +66,26 @@ export default function FeedBodyCard(props: PostsProps) {
     const [formattedCreatedAt, setFormattedCreatedAt] = useState<string>("");
     const [dynamicCaption, setDynamicCaption] = useState<string>("");
 
-    const handleLike = () => {
-        setIsLiked(prev => !prev);
-    };
+    const handleLike = useMemo(() => {
+        return () => setIsLiked(prev => !prev);
+    }, [setIsLiked]);
 
-    const handlePressComment = () => {
+
+    const handlePressComment = useCallback(() => {
         console.log("comment");
-    }
+    }, []);
 
-    const handlePressShare = () => {
+    const handlePressShare = useCallback(() => {
         console.log("share");
-    }
+    }, []);
 
-    const handlePressSave = () => {
+    const handlePressSave = useCallback(() => {
         setIsSaved(prev => !prev);
-    }
+    }, [setIsSaved]);
 
-    const handlePressCaptionTruncate = () => {
+    const handlePressCaptionTruncate = useCallback(() => {
         setCaptionIsTruncated(false);
-    };
+    }, []);
 
     const handlePressIn = () => {
         Animated.spring(scaleLikeButtonValue, {
@@ -137,21 +138,19 @@ export default function FeedBodyCard(props: PostsProps) {
     };
 
     useEffect(() => {
-        setFormattedCreatedAt(watchTimePassedOut(props.createdAt));
         const interval = setInterval(() => {
             setFormattedCreatedAt(watchTimePassedOut(props.createdAt));
         }, 1000 * 10);
 
-        return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
         if (captionIsTruncated) {
             setDynamicCaption(props.caption.slice(0, 150));
         } else {
             setDynamicCaption(props.caption);
         }
-    }, [captionIsTruncated]);
+
+        return () => clearInterval(interval);
+    }, [captionIsTruncated, props.caption, props.createdAt, watchTimePassedOut]);
+
 
     return (
         <View>
@@ -250,7 +249,7 @@ export default function FeedBodyCard(props: PostsProps) {
                         alignItems: "center",
                         width: 40,
                     }}
-                    activeOpacity={1}
+                    activeOpacity={0.9}
                     onPress={handlePressSave}
                 >
                     <FontAwesome name={isSaved ? "bookmark" : "bookmark-o"} size={26} color="black" />

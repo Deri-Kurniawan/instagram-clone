@@ -27,7 +27,7 @@ export default function StoryBubble({ id, username, avatar, storyIsSeen }: Story
         alignItems: "center",
         paddingHorizontal: 6,
         height: "100%",
-        width: "100%"
+        width: "100%",
       }}>
         {!storyIsSeen ? (
           <LinearGradient
@@ -50,7 +50,8 @@ export default function StoryBubble({ id, username, avatar, storyIsSeen }: Story
                 borderRadius: 75 / 2,
                 alignSelf: 'center',
                 borderColor: '#fff',
-                borderWidth: 3
+                borderWidth: 3,
+                backgroundColor: "#fff"
               }} />
           </LinearGradient>
         ) : (
