@@ -1,28 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
-import { Animated, Image, Text, TouchableOpacity, View } from 'react-native'
-import { Link } from 'expo-router';
+import React, { Fragment, useEffect, useState } from "react";
+import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
+import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
+import { Link } from "expo-router";
+import { PostsProps, UserProps } from "../../providers/GlobalProvider";
 
-const watchTimePassedOut = ((createdAt: any) => {
-    if (!createdAt) return '0 seconds ago';
+const watchTimePassedOut = (createdAt: any) => {
+    if (!createdAt) return "0 seconds ago";
     const postCreatedAt = new Date(createdAt);
     const now = new Date();
     const diff = now.getTime() - postCreatedAt.getTime();
     const diffInDays = Math.floor(diff / (1000 * 3600 * 24));
     const diffInHours = Math.floor(diff / (1000 * 3600));
     const diffInMinutes = Math.floor(diff / (1000 * 60));
-    const diffInSeconds = Math.floor(diff / (1000));
+    const diffInSeconds = Math.floor(diff / 1000);
 
     if (diffInDays > 0 && diffInDays < 7) {
-        if (diffInDays > 0 && diffInDays < 2)
-            return `${diffInDays} day ago`;
+        if (diffInDays > 0 && diffInDays < 2) return `${diffInDays} day ago`;
 
         return `${diffInDays} days ago`;
     }
 
     if (diffInHours > 0 && diffInHours < 24) {
-        if (diffInHours > 0 && diffInHours < 2)
-            return `${diffInHours} hour ago`;
+        if (diffInHours > 0 && diffInHours < 2) return `${diffInHours} hour ago`;
 
         return `${diffInHours} hours ago`;
     }
@@ -50,24 +49,15 @@ const watchTimePassedOut = ((createdAt: any) => {
 
     // Use the user's locale to format the date
     const formattedDate = new Date(postCreatedAt).toLocaleDateString(userLocale, {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
+        month: "long",
+        day: "numeric",
+        year: "numeric",
     });
 
     return formattedDate;
-});
+};
 
-
-interface FeedBodyCardProps {
-    author: any,
-    likes: number,
-    caption: string,
-    comments: number,
-    createdAt: string,
-}
-
-export default function FeedBodyCard({ author, likes, caption, comments, createdAt }: FeedBodyCardProps) {
+export default function FeedBodyCard(props: PostsProps) {
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const [scaleLikeButtonValue] = useState(new Animated.Value(1));
     const [captionIsTruncated, setCaptionIsTruncated] = useState<boolean>(true);
@@ -77,7 +67,7 @@ export default function FeedBodyCard({ author, likes, caption, comments, created
     const handlePressIn = () => {
         Animated.spring(scaleLikeButtonValue, {
             toValue: 0.1,
-            useNativeDriver: true
+            useNativeDriver: true,
         }).start();
     };
 
@@ -91,25 +81,30 @@ export default function FeedBodyCard({ author, likes, caption, comments, created
     };
 
     const animatedStyle = {
-        transform: [{ scale: scaleLikeButtonValue }]
+        transform: [{ scale: scaleLikeButtonValue }],
     };
-
 
     const captionWithLinks = (caption: string) => {
         const hashtagRegex = /#[\w]+/g;
         const mentionRegex = /@[\w]+/g;
         const whitespaceRegex = /\s/g;
 
-        return caption.split(' ').map((word, index) => {
-            let link = null;
+        return caption.split(" ").map((word, index) => {
+            let href = null;
             if (word.match(hashtagRegex)) {
-                link = `/hashtags/${word.slice(1)}`;
+                href = {
+                    pathname: "/hashtags/detail",
+                    params: { username: word.slice(1) },
+                }
             } else if (word.match(mentionRegex)) {
-                link = `/users/${word.slice(1)}`;
+                href = {
+                    pathname: "/users/profile",
+                    params: { hashtagname: word.slice(1) },
+                }
             }
 
-            return link ? (
-                <Link href={link} key={index} style={{ color: '#097ACA' }}>
+            return href ? (
+                <Link href={href} key={index} style={{ color: "#097ACA" }}>
                     {word.replace(whitespaceRegex, "")}{" "}
                 </Link>
             ) : (
@@ -118,44 +113,45 @@ export default function FeedBodyCard({ author, likes, caption, comments, created
         });
     };
 
-
-
-
     useEffect(() => {
-        setFormattedCreatedAt(watchTimePassedOut(createdAt))
+        setFormattedCreatedAt(watchTimePassedOut(props.createdAt));
         const interval = setInterval(() => {
-            setFormattedCreatedAt(watchTimePassedOut(createdAt))
-        }, 1000 * 10)
+            setFormattedCreatedAt(watchTimePassedOut(props.createdAt));
+        }, 1000 * 10);
 
-        return () => clearInterval(interval)
-    }, [])
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         if (captionIsTruncated) {
-            setDynamicCaption(caption.slice(0, 150))
+            setDynamicCaption(props.caption.slice(0, 150));
         } else {
-            setDynamicCaption(caption)
+            setDynamicCaption(props.caption);
         }
-    }, [captionIsTruncated])
+    }, [captionIsTruncated]);
 
     return (
         <View>
             {/* action buttons */}
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                height: 42,
-                paddingLeft: 2,
-                paddingRight: 8,
-            }}>
-                <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    height: "100%",
-                    width: 150,
-                    justifyContent: 'space-between',
-                }}>
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    height: 42,
+                    paddingLeft: 2,
+                    paddingRight: 8,
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        height: "100%",
+                        width: 150,
+                        justifyContent: "space-between",
+                    }}
+                >
                     {/* Like Button */}
                     <TouchableOpacity
                         activeOpacity={0.5}
@@ -163,13 +159,13 @@ export default function FeedBodyCard({ author, likes, caption, comments, created
                         onPressOut={handlePressOut}
                         style={{
                             flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: "100%"
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
                         }}
                         onPress={() => {
-                            setIsLiked(prev => !prev)
-                            console.log("like")
+                            setIsLiked((prev) => !prev);
+                            console.log("like");
                         }}
                     >
                         <Animated.View style={animatedStyle}>
@@ -186,9 +182,9 @@ export default function FeedBodyCard({ author, likes, caption, comments, created
                         activeOpacity={0.5}
                         style={{
                             flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: "100%"
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
                         }}
                         onPress={() => console.log("comment")}
                     >
@@ -198,7 +194,7 @@ export default function FeedBodyCard({ author, likes, caption, comments, created
                                 height: 22,
                             }}
                             source={{
-                                uri: "https://cdn-icons-png.flaticon.com/512/5948/5948565.png"
+                                uri: "https://cdn-icons-png.flaticon.com/512/5948/5948565.png",
                             }}
                         />
                     </TouchableOpacity>
@@ -208,9 +204,9 @@ export default function FeedBodyCard({ author, likes, caption, comments, created
                         activeOpacity={0.5}
                         style={{
                             flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: "100%"
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
                         }}
                         onPress={() => console.log("share")}
                     >
@@ -220,18 +216,18 @@ export default function FeedBodyCard({ author, likes, caption, comments, created
                                 height: 22,
                             }}
                             source={{
-                                uri: "https://cdn-icons-png.flaticon.com/512/5948/5948572.png"
-                            }} />
+                                uri: "https://cdn-icons-png.flaticon.com/512/5948/5948572.png",
+                            }}
+                        />
                     </TouchableOpacity>
-
                 </View>
 
                 {/* Save Button */}
                 <TouchableOpacity
                     style={{
                         height: "100%",
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        justifyContent: "center",
+                        alignItems: "center",
                         width: 40,
                     }}
                     activeOpacity={0.5}
@@ -241,33 +237,107 @@ export default function FeedBodyCard({ author, likes, caption, comments, created
                 </TouchableOpacity>
             </View>
 
-            <View style={{ padding: 14, paddingTop: 4 }}>
-                <Text style={{ fontWeight: 'bold' }}>
-                    {author.username}{" "}
-                    {caption !== "" && (
-                        <Text style={{ fontWeight: 'normal' }}>
+            {/* content body */}
+            <View style={{ padding: 14, paddingTop: props.caption === "" ? 0 : 4 }}>
+                {/* likes profile stack */}
+                {props.likes.length > 0 && (
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
+                            marginBottom: 4,
+                        }}
+                    >
+                        <Link
+                            href={{
+                                pathname: "/posts/likers",
+                                params: { id: props.likes[0].id },
+                            }}
+                        >
+                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                {props.likes
+                                    .slice(0, 3)
+                                    .map((like: UserProps, index: number) => (
+                                        <Image
+                                            key={index.toString()}
+                                            style={{
+                                                borderColor: "white",
+                                                borderWidth: 2,
+                                                width: 22,
+                                                height: 22,
+                                                borderRadius: 10,
+                                                marginLeft: index > 0 ? -8 : 0,
+                                                zIndex: 3 - index,
+                                            }}
+                                            source={{
+                                                uri: like.avatar,
+                                            }}
+                                        />
+                                    ))}
+                            </View>
+                        </Link>
+                        <View style={{ marginLeft: 8 }}>
+                            {props.likes.length > 0 && (
+                                <Text>
+                                    Liked by{" "}
+                                    <Link
+                                        style={{ fontWeight: "bold" }}
+                                        href={{
+                                            pathname: "/users",
+                                            params: { id: props.likes[0].id },
+                                        }}
+                                    >
+                                        {props.likes[0].username}
+                                    </Link>{" "}
+                                    <Link
+                                        style={{
+                                            fontWeight: "bold",
+                                        }}
+                                        href={{
+                                            pathname: "posts/likers",
+                                            params: { id: props.id },
+                                        }}
+                                    >
+                                        {props.likes.length > 3 && (
+                                            <>
+                                                and {props.likes.length - 3 === 0 ? <Fragment /> : props.likes.length - 3} others
+                                            </>
+                                        )}
+                                    </Link>
+                                </Text>
+                            )}
+                        </View>
+                    </View>
+                )}
+
+                {props.caption !== "" && (
+                    <Text style={{ fontWeight: "bold" }}>
+                        {props.author.username}{" "}
+                        <Text style={{ fontWeight: "normal" }}>
                             {captionIsTruncated ? (
                                 <Text>
                                     {captionWithLinks(dynamicCaption)}
-                                    {caption.length > 150 && (
-                                        <Text style={{ color: "#8e8e8e" }} onPress={() => setCaptionIsTruncated(false)}> ... more</Text>
+                                    {props.caption.length > 150 && (
+                                        <Text
+                                            style={{ color: "#8e8e8e" }}
+                                            onPress={() => setCaptionIsTruncated(false)}
+                                        >
+                                            {" "}
+                                            ... more
+                                        </Text>
                                     )}
                                 </Text>
                             ) : (
-                                <Text>
-                                    {captionWithLinks(dynamicCaption)}
-                                </Text>
+                                <Text>{captionWithLinks(dynamicCaption)}</Text>
                             )}
                         </Text>
-                    )}
-                </Text>
+                    </Text>
+                )}
                 <Text style={{ fontSize: 9.8, color: "#8e8e8e", marginTop: 6 }}>
                     {formattedCreatedAt}
                 </Text>
             </View>
-
         </View>
-    )
+    );
 }
-
-// 44
