@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { Animated, Text, TouchableOpacity, View } from 'react-native'
 import { CommentsProps } from '../../providers/GlobalProvider'
 import { AntDesign } from '@expo/vector-icons'
-import { captionWithLinks } from './FeedBodyCard'
 
 export default function FeedBodyComment(comment: CommentsProps) {
     const [isLiked, setIsLiked] = useState<boolean>(false);
@@ -34,6 +33,35 @@ export default function FeedBodyComment(comment: CommentsProps) {
         transform: [{ scale: scaleLikeButtonValue }],
     };
 
+    const hashtagsMentionsLinking = (caption: string) => {
+        const hashtagRegex = /#[\w]+/g;
+        const mentionRegex = /@[\w]+/g;
+        const whitespaceRegex = /\s/g;
+
+        return caption.split(" ").map((word, index) => {
+            let href = null;
+            if (word.match(hashtagRegex)) {
+                href = {
+                    pathname: "/hashtags/detail",
+                    params: { username: word.slice(1) },
+                };
+            } else if (word.match(mentionRegex)) {
+                href = {
+                    pathname: "/users/profile",
+                    params: { hashtagname: word.slice(1) },
+                };
+            }
+
+            return href ? (
+                <Link href={href} key={index} style={{ color: "#097ACA" }}>
+                    {word.replace(whitespaceRegex, "")}{" "}
+                </Link>
+            ) : (
+                <React.Fragment key={index}>{word} </React.Fragment>
+            );
+        });
+    };
+
     return (
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <View>
@@ -49,7 +77,7 @@ export default function FeedBodyComment(comment: CommentsProps) {
                     >
                         {comment.author.username}
                     </Link>{" "}
-                    {captionWithLinks(comment.content)}
+                    {hashtagsMentionsLinking(comment.content)}
                 </Text>
             </View>
             <TouchableOpacity
