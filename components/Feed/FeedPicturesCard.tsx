@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Image, FlatList, Text, useWindowDimensions } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Image, FlatList, Text, useWindowDimensions, Animated } from 'react-native';
 
 interface Props {
     pictures: string[];
@@ -14,6 +14,16 @@ const FeedPicturesCard: React.FC<Props> = ({ pictures }) => {
         const index = Math.floor(contentOffset.x / layoutMeasurement.width);
         setCurrentVisibleImageIndex(index);
     };
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+        }).start();
+    }, [currentVisibleImageIndex]);
 
     const renderImageItem = ({ item }: { item: string }) => (
         <View style={{
@@ -33,9 +43,7 @@ const FeedPicturesCard: React.FC<Props> = ({ pictures }) => {
         </View>
     );
 
-
-
-    const renderImageIndicator = () => (
+    const RenderImageIndicator = () => (
         <View
             style={{
                 backgroundColor: 'black',
@@ -51,6 +59,29 @@ const FeedPicturesCard: React.FC<Props> = ({ pictures }) => {
             <Text style={{ color: 'white', fontSize: 12 }}>
                 {currentVisibleImageIndex + 1}/{pictures.length}
             </Text>
+        </View>
+    );
+
+    const DotsMediaFloatIndicator = () => (
+        <View
+            style={{
+                flexDirection: 'row',
+                position: 'absolute',
+                bottom: -24,
+                alignSelf: 'center',
+            }}>
+            {pictures.map((_, index) => (
+                <View
+                    key={index}
+                    style={{
+                        backgroundColor: currentVisibleImageIndex === index ? '#097ACA' : '#DADBDA',
+                        width: 6,
+                        height: 6,
+                        borderRadius: 4,
+                        marginHorizontal: 2,
+                    }}
+                />
+            ))}
         </View>
     );
 
@@ -71,7 +102,8 @@ const FeedPicturesCard: React.FC<Props> = ({ pictures }) => {
                         decelerationRate={'fast'}
                         onMomentumScrollEnd={handleImageIndexChanged}
                     />
-                    {renderImageIndicator()}
+                    <RenderImageIndicator />
+                    <DotsMediaFloatIndicator />
                 </View>
             )}
         </View>
