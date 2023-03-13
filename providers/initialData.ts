@@ -75,7 +75,7 @@ export const initialUsers = [
 
 export const initialUser = initialUsers[0];
 
-export const initialPosts = [
+export const initialFeeds = [
   {
     id: "1",
     author: initialUsers.find(

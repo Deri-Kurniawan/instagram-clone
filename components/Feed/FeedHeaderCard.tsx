@@ -1,8 +1,26 @@
 import { TouchableWithoutFeedback, View, Image, Text } from "react-native"
-import { PostsProps } from "../../providers/GlobalProvider"
+import { FeedProps } from "../../providers/GlobalProvider"
 import { MaterialIcons } from "@expo/vector-icons"
 
-export default function FeedHeaderCard({ id, author, location }: PostsProps) {
+export default function FeedHeaderCard({ id, author, location }: FeedProps) {
+    const handlePressProfile = (pressOnAvatar: boolean = false) => {
+        if (!pressOnAvatar) {
+            console.log(`go to (${author.username}) profile [from feed header]`)
+            return;
+        }
+
+        // if stories exist then go to stories
+        console.log(`go to (${author.username}) profile [from feed header image]`)
+        // else go to profile
+    }
+
+    const handlePressLocation = () => {
+        console.log(`go to (${location}) location [from feed header]`)
+    }
+
+    const handlePressMore = () => {
+        console.log(`show option (more for ${author.username}) feed [from feed header]`)
+    }
     return (
         <>
             {/* header */}
@@ -17,7 +35,7 @@ export default function FeedHeaderCard({ id, author, location }: PostsProps) {
                 borderBottomWidth: 1,
             }}>
                 {/* image */}
-                <TouchableWithoutFeedback onPress={() => console.log("user detail")}>
+                <TouchableWithoutFeedback onPress={() => handlePressProfile(true)}>
                     <View>
                         <Image
                             source={{ uri: author.avatar }}
@@ -30,7 +48,7 @@ export default function FeedHeaderCard({ id, author, location }: PostsProps) {
                 {/* username & location */}
                 <>
                     {location === "" ? (
-                        <TouchableWithoutFeedback onPress={() => console.log("user detail")}>
+                        <TouchableWithoutFeedback onPress={() => handlePressProfile(false)}>
                             {/* username & verified */}
                             <View style={{
                                 flex: 1,
@@ -53,7 +71,7 @@ export default function FeedHeaderCard({ id, author, location }: PostsProps) {
                             alignItems: "flex-start",
                             maxHeight: 30
                         }}>
-                            <TouchableWithoutFeedback onPress={() => console.log("user detail")}>
+                            <TouchableWithoutFeedback onPress={() => handlePressProfile(false)}>
                                 {/* username & verified */}
                                 <View style={{
                                     flex: 1,
@@ -68,7 +86,7 @@ export default function FeedHeaderCard({ id, author, location }: PostsProps) {
                             </TouchableWithoutFeedback>
 
                             {/* location */}
-                            <TouchableWithoutFeedback onPress={() => console.log("location")}>
+                            <TouchableWithoutFeedback onPress={handlePressLocation}>
                                 <View>
                                     <Text numberOfLines={1} style={{ fontSize: 11, margin: 0, padding: 0 }}>{location}</Text>
                                 </View>
@@ -78,7 +96,7 @@ export default function FeedHeaderCard({ id, author, location }: PostsProps) {
                 </>
 
                 {/* more */}
-                <TouchableWithoutFeedback onPress={() => console.log("more")}>
+                <TouchableWithoutFeedback onPress={handlePressMore}>
                     <View style={{
                         width: 35,
                         height: "100%",

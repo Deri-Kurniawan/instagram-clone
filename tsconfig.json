@@ -4,7 +4,9 @@
         "baseUrl": "app",
         "paths": {
             "@/*": [
-                "/*"
+                "/*",
+                "providers/*",
+                "utils/*",
             ],
         }
     }

@@ -1,64 +1,12 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Image, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { Link } from "expo-router";
-import { CommentsProps, PostsProps, UserProps } from "../../providers/GlobalProvider";
+import { CommentProps, FeedProps, UserProps } from "../../providers/GlobalProvider";
 import FeedBodyComment from "./FeedBodyComment";
+import { watchTimePassedOut } from "../../utils";
 
-const watchTimePassedOut = (createdAt: any) => {
-    if (!createdAt) return "0 seconds ago";
-    const postCreatedAt = new Date(createdAt);
-    const now = new Date();
-    const diff = now.getTime() - postCreatedAt.getTime();
-    const diffInDays = Math.floor(diff / (1000 * 3600 * 24));
-    const diffInHours = Math.floor(diff / (1000 * 3600));
-    const diffInMinutes = Math.floor(diff / (1000 * 60));
-    const diffInSeconds = Math.floor(diff / 1000);
-
-    if (diffInDays > 0 && diffInDays < 7) {
-        if (diffInDays > 0 && diffInDays < 2) return `${diffInDays} day ago`;
-
-        return `${diffInDays} days ago`;
-    }
-
-    if (diffInHours > 0 && diffInHours < 24) {
-        if (diffInHours > 0 && diffInHours < 2) return `${diffInHours} hour ago`;
-
-        return `${diffInHours} hours ago`;
-    }
-
-    if (diffInMinutes > 0 && diffInMinutes < 60) {
-        if (diffInMinutes > 0 && diffInMinutes < 2)
-            return `${diffInMinutes} minute ago`;
-
-        return `${diffInMinutes} minutes ago`;
-    }
-
-    if (diffInSeconds > 0 && diffInSeconds < 60) {
-        if (diffInSeconds > 0 && diffInSeconds < 2)
-            return `${diffInSeconds} second ago`;
-
-        return `${diffInSeconds} seconds ago`;
-    }
-
-    if (diffInSeconds >= 0 && diffInSeconds <= 10) {
-        return `Just now`;
-    }
-
-    // Get the user's locale
-    const userLocale = navigator.language || navigator.language;
-
-    // Use the user's locale to format the date
-    const formattedDate = new Date(postCreatedAt).toLocaleDateString(userLocale, {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-    });
-
-    return formattedDate;
-};
-
-export default function FeedBodyCard(props: PostsProps) {
+export default function FeedBodyCard(props: FeedProps) {
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const [isSaved, setIsSaved] = useState<boolean>(false);
     const [scaleLikeButtonValue] = useState(new Animated.Value(1));
@@ -66,35 +14,41 @@ export default function FeedBodyCard(props: PostsProps) {
     const [formattedCreatedAt, setFormattedCreatedAt] = useState<string>("");
     const [dynamicCaption, setDynamicCaption] = useState<string>("");
 
-    const handleLike = useMemo(() => {
-        return () => setIsLiked(prev => !prev);
+    const handlePressLike = useMemo(() => {
+        return () => setIsLiked(prev => {
+            console.log(`${!prev ? "like" : "unlike"} for (${props.author.username}) feed [from feed body]`)
+            return !prev
+        });
     }, [setIsLiked]);
 
 
     const handlePressComment = useCallback(() => {
-        console.log("comment");
+        console.log(`comment for (${props.author.username}) feed [from feed body]`)
     }, []);
 
     const handlePressShare = useCallback(() => {
-        console.log("share");
+        console.log(`share for (${props.author.username}) feed [from feed body]`)
     }, []);
 
     const handlePressSave = useCallback(() => {
-        setIsSaved(prev => !prev);
-    }, [setIsSaved]);
+        setIsSaved(prev => {
+            console.log(`${!prev ? "saved" : "unsave"} for (${props.author.username}) feed [from feed body]`)
+            return !prev
+        });
+    }, []);
 
     const handlePressCaptionTruncate = useCallback(() => {
         setCaptionIsTruncated(false);
     }, []);
 
-    const handlePressIn = () => {
+    const handlePressInLike = () => {
         Animated.spring(scaleLikeButtonValue, {
             toValue: 0.1,
             useNativeDriver: true,
         }).start();
     };
 
-    const handlePressOut = () => {
+    const handlePressOutLike = () => {
         Animated.spring(scaleLikeButtonValue, {
             toValue: 1,
             friction: 4,
@@ -177,15 +131,15 @@ export default function FeedBodyCard(props: PostsProps) {
                     {/* Like Button */}
                     <TouchableOpacity
                         activeOpacity={0.5}
-                        onPressIn={handlePressIn}
-                        onPressOut={handlePressOut}
+                        onPressIn={handlePressInLike}
+                        onPressOut={handlePressOutLike}
                         style={{
                             flex: 1,
                             justifyContent: "center",
                             alignItems: "center",
                             height: "100%",
                         }}
-                        onPress={handleLike}
+                        onPress={handlePressLike}
                     >
                         <Animated.View style={animatedStyle}>
                             <AntDesign
@@ -270,7 +224,7 @@ export default function FeedBodyCard(props: PostsProps) {
                     >
                         <Link
                             href={{
-                                pathname: "/posts/likers",
+                                pathname: "/feeds/likers",
                                 params: { id: props.likes[0].id },
                             }}
                         >
@@ -314,7 +268,7 @@ export default function FeedBodyCard(props: PostsProps) {
                                             fontWeight: "bold",
                                         }}
                                         href={{
-                                            pathname: "posts/likers",
+                                            pathname: "feeds/likers",
                                             params: { id: props.id },
                                         }}
                                     >
@@ -358,7 +312,7 @@ export default function FeedBodyCard(props: PostsProps) {
                         <Link
                             style={{ fontWeight: "bold", color: "#8e8e8e" }}
                             href={{
-                                pathname: "/posts/comments",
+                                pathname: "/feeds/comments",
                                 params: { id: props.id },
                             }}
                         >
@@ -369,7 +323,7 @@ export default function FeedBodyCard(props: PostsProps) {
                     <>
                         {props.comments.length > 0 && (
                             <View style={{ flexDirection: "column", marginTop: 6 }}>
-                                {props.comments.map((comment: CommentsProps, index) => (
+                                {props.comments.map((comment: CommentProps, index) => (
                                     <FeedBodyComment key={index.toString()} {...comment} />
                                 ))}
                             </View>

@@ -1,15 +1,18 @@
 import { Link } from 'expo-router'
 import React, { useState } from 'react'
 import { Animated, Text, TouchableOpacity, View } from 'react-native'
-import { CommentsProps } from '../../providers/GlobalProvider'
+import { CommentProps } from '../../providers/GlobalProvider'
 import { AntDesign } from '@expo/vector-icons'
 
-export default function FeedBodyComment(comment: CommentsProps) {
+export default function FeedBodyComment(comment: CommentProps) {
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const [scaleLikeButtonValue] = useState(new Animated.Value(1));
 
     const handlePressLike = () => {
-        setIsLiked((prev) => !prev);
+        setIsLiked((prev) => {
+            console.log(`${!prev ? "like" : "unlike"} for (${comment.author.username}) comment [from feed body]`)
+            return !prev;
+        });
     }
 
     const handlePressIn = () => {

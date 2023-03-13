@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect, memo } from 'react';
 import { ActivityIndicator, Animated, Easing, FlatList, FlatListProps, RefreshControl, StatusBar, StyleSheet, ToastAndroid, View } from 'react-native';
-import { PostsProps, UserProps, useGlobal } from '../providers/GlobalProvider';
+import { FeedProps, UserProps, useGlobal } from '../providers/GlobalProvider';
 import FeedCard from '../components/Feed/FeedCard';
 import StoryBubble from '../components/StoryBubble';
 
@@ -9,7 +9,7 @@ const MemoizedFlatList: React.FC<FlatListProps<any>> = React.memo(FlatList);
 const maxShowsFeedLimit = 12;
 
 export default function Page() {
-  const { user, users, posts, setPosts } = useGlobal();
+  const { user, users, feeds, setFeeds } = useGlobal();
   const [sortUsersByStoryNotSeen, setSortUsersByStoryNotSeen] = useState<UserProps[]>(() =>
     users.slice().sort((a, b) => (a.storyIsSeen === b.storyIsSeen ? 0 : a.storyIsSeen ? 1 : -1))
   );
@@ -26,21 +26,17 @@ export default function Page() {
     distanceFromEnd == 0 && setfeedHasReachedThreesholdEnd(true);
 
   useEffect(() => {
-    console.log(posts.length);
-  }, [posts])
-
-  useEffect(() => {
     if (feedHasReachedThreesholdEnd) {
-      if (posts.length === maxShowsFeedLimit) {
+      if (feeds.length === maxShowsFeedLimit) {
         setfeedHasReachedThreesholdEnd(false);
         ToastAndroid.showWithGravity(
-          'No more posts to show',
+          'No more feeds to show',
           ToastAndroid.LONG,
           ToastAndroid.BOTTOM,
         )
         return;
       };
-      setPosts((prev: PostsProps[]) => [...prev, ...prev.slice(0, 3)])
+      setFeeds((prev: FeedProps[]) => [...prev, ...prev.slice(0, 3)])
       setfeedHasReachedThreesholdEnd(false);
     }
   }, [feedHasReachedThreesholdEnd]);
@@ -48,8 +44,8 @@ export default function Page() {
   // Refresh hook
   useEffect(() => {
     if (refreshing) {
-      setPosts((prev: PostsProps[]) =>
-        prev.slice(0, 6).sort((a: PostsProps, b: PostsProps) => Math.random() - 0.6)
+      setFeeds((prev: FeedProps[]) =>
+        prev.slice(0, 6).sort((a: FeedProps, b: FeedProps) => Math.random() - 0.6)
       );
       setRefreshing(false);
     }
@@ -76,7 +72,7 @@ export default function Page() {
         });
       });
     }
-  }, [posts, refreshing, feedHasReachedThreesholdEnd]);
+  }, [feeds, refreshing, feedHasReachedThreesholdEnd]);
 
   const RenderStories = memo(() => (
     <MemoizedFlatList
@@ -96,7 +92,7 @@ export default function Page() {
   const RenderFeed = () => {
     const renderItem = ({ item }) => <Animated.View style={{ opacity }}><FeedCard {...item} /></Animated.View>;
     const renderListFooter = memo(() => {
-      if (posts.length === maxShowsFeedLimit) return null
+      if (feeds.length === maxShowsFeedLimit) return null
       return (
         <View style={{ paddingVertical: 14, width: "100%", backgroundColor: "#DADBDA", opacity: 0.6, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator style={{ backgroundColor: '#fff', padding: 4, borderRadius: 50 }} size="large" color="#000" />
@@ -109,7 +105,7 @@ export default function Page() {
         keyExtractor={(item, index) => index.toString()}
         horizontal={false}
         showsHorizontalScrollIndicator={false}
-        data={posts}
+        data={feeds}
         renderItem={renderItem}
         onEndReached={handleFeedEndReached}
         onEndReachedThreshold={2}

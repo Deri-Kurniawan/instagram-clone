@@ -1,15 +1,15 @@
 import React, { Fragment } from 'react'
-import { PostsProps } from '../../providers/GlobalProvider';
+import { FeedProps } from '../../providers/GlobalProvider';
 import FeedHeaderCard from "./FeedHeaderCard";
 import FeedPicturesCard from './FeedPicturesCard';
 import FeedBodyCard from './FeedBodyCard';
 
-export default function FeedCard(post: PostsProps) {
+export default function FeedCard(feed: FeedProps) {
     return (
         <Fragment>
-            <FeedHeaderCard {...post} />
-            <FeedPicturesCard pictures={post.pictures} />
-            <FeedBodyCard {...post} />
+            <FeedHeaderCard {...feed} />
+            <FeedPicturesCard pictures={feed.pictures} />
+            <FeedBodyCard {...feed} />
         </Fragment>
     )
 }

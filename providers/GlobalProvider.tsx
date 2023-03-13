@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
-import { initialPosts, initialUser, initialUsers } from './initialData';
+import { initialFeeds, initialUser, initialUsers } from './initialData';
 
 export interface UserProps {
     id: string,
@@ -12,52 +12,52 @@ export interface UserProps {
     stories: string[] | any[],
 }
 
-export interface CommentsProps {
+export interface CommentProps {
     author: UserProps,
     comment: string,
     content: string,
     likes: UserProps[],
 }
 
-export interface PostsProps {
+export interface FeedProps {
     id: string,
     author: UserProps,
     pictures: string[],
     location: string,
     caption: string,
     likes: UserProps[],
-    comments: CommentsProps[] | any[],
+    comments: CommentProps[] | any[],
     createdAt: string,
 }
 
 
-export interface ReturnProps {
+export interface UseGlobalProps {
     user: UserProps,
     setUser: any,
     users: UserProps[],
     setUsers: any,
-    posts: PostsProps[],
-    setPosts: any,
+    feeds: FeedProps[],
+    setFeeds: any,
 }
 
 const GlobalContext = createContext(null)
 
-export const useGlobal = (): ReturnProps => useContext(GlobalContext)
+export const useGlobal = (): UseGlobalProps => useContext(GlobalContext)
 
 export const GlobalProvider = ({ children }) => {
     const [users, setUsers] = useState<UserProps[]>(initialUsers);
 
     const [user, setUser] = useState<UserProps>(initialUser);
 
-    const [posts, setPosts] = useState<PostsProps[]>(initialPosts);
+    const [feeds, setFeeds] = useState<FeedProps[]>(initialFeeds);
 
-    const value: ReturnProps = {
+    const value: UseGlobalProps = {
         user,
         setUser,
         users,
         setUsers,
-        posts,
-        setPosts
+        feeds,
+        setFeeds
     };
 
     return (
