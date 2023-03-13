@@ -1,8 +1,9 @@
 import React, { useCallback, useRef, useState, useEffect, memo } from 'react';
 import { ActivityIndicator, Animated, Easing, FlatList, FlatListProps, RefreshControl, StatusBar, StyleSheet, ToastAndroid, View } from 'react-native';
-import { FeedProps, UserProps, useGlobal } from '../providers/GlobalProvider';
 import FeedCard from '../components/Feed/FeedCard';
 import StoryBubble from '../components/StoryBubble';
+import { FeedProps, UserProps, initialOnRefreshFeedsUpdate } from '../providers/initialData';
+import { useGlobal } from '../providers/GlobalProvider';
 
 const MemoizedFlatList: React.FC<FlatListProps<any>> = React.memo(FlatList);
 
@@ -11,10 +12,10 @@ const maxShowsFeedLimit = 12;
 export default function Page() {
   const { user, users, feeds, setFeeds } = useGlobal();
   const [sortUsersByStoryNotSeen, setSortUsersByStoryNotSeen] = useState<UserProps[]>(() =>
-    users.slice().sort((a, b) => (a.storyIsSeen === b.storyIsSeen ? 0 : a.storyIsSeen ? 1 : -1))
+    users.sort((a, b) => (a.storyIsSeen === b.storyIsSeen ? 0 : a.storyIsSeen ? 1 : -1))
   );
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [feedHasReachedThreesholdEnd, setfeedHasReachedThreesholdEnd] = useState<boolean>(false)
+  const [feedHasReachedThresholdEnd, setFeedHasReachedThresholdEnd] = useState<boolean>(false);
 
   const opacity = useRef(new Animated.Value(1)).current;
 
@@ -23,25 +24,24 @@ export default function Page() {
   }, []);
 
   const handleFeedEndReached = ({ distanceFromEnd }: { distanceFromEnd: number }) =>
-    distanceFromEnd == 0 && setfeedHasReachedThreesholdEnd(true);
+    distanceFromEnd == 0 && setFeedHasReachedThresholdEnd(true);
 
   useEffect(() => {
-    if (feedHasReachedThreesholdEnd) {
-      if (feeds.length === maxShowsFeedLimit) {
-        setfeedHasReachedThreesholdEnd(false);
+    if (feedHasReachedThresholdEnd) {
+      if (feeds.length >= maxShowsFeedLimit) {
+        setFeedHasReachedThresholdEnd(false);
         ToastAndroid.showWithGravity(
           'No more feeds to show',
           ToastAndroid.LONG,
           ToastAndroid.BOTTOM,
         )
-        return;
-      };
-      setFeeds((prev: FeedProps[]) => [...prev, ...prev.slice(0, 3)])
-      setfeedHasReachedThreesholdEnd(false);
+      } else {
+        setFeeds((prev: FeedProps[]) => [...prev, ...initialOnRefreshFeedsUpdate.slice(prev.length - 6, prev.length - 3)]);
+        setFeedHasReachedThresholdEnd(false);
+      }
     }
-  }, [feedHasReachedThreesholdEnd]);
+  }, [feedHasReachedThresholdEnd, initialOnRefreshFeedsUpdate, feeds]);
 
-  // Refresh hook
   useEffect(() => {
     if (refreshing) {
       setFeeds((prev: FeedProps[]) =>
@@ -52,7 +52,7 @@ export default function Page() {
   }, [refreshing]);
 
   useEffect(() => {
-    if (refreshing && !feedHasReachedThreesholdEnd) {
+    if (refreshing && !feedHasReachedThresholdEnd) {
       Animated.timing(opacity, {
         toValue: 0.4,
         duration: 400,
@@ -60,7 +60,7 @@ export default function Page() {
         useNativeDriver: true,
       }).start(() => {
         setSortUsersByStoryNotSeen(prev =>
-          prev.slice().sort((a, b) => (a.storyIsSeen === b.storyIsSeen ? 0 : a.storyIsSeen ? 1 : -1))
+          prev.sort((a, b) => (a.storyIsSeen === b.storyIsSeen ? 0 : a.storyIsSeen ? 1 : -1))
         );
         Animated.timing(opacity, {
           toValue: 1,
@@ -72,7 +72,7 @@ export default function Page() {
         });
       });
     }
-  }, [feeds, refreshing, feedHasReachedThreesholdEnd]);
+  }, [feeds, refreshing, feedHasReachedThresholdEnd]);
 
   const RenderStories = memo(() => (
     <MemoizedFlatList
@@ -92,7 +92,7 @@ export default function Page() {
   const RenderFeed = () => {
     const renderItem = ({ item }) => <Animated.View style={{ opacity }}><FeedCard {...item} /></Animated.View>;
     const renderListFooter = memo(() => {
-      if (feeds.length === maxShowsFeedLimit) return null
+      if (feeds.length >= maxShowsFeedLimit) return null
       return (
         <View style={{ paddingVertical: 14, width: "100%", backgroundColor: "#DADBDA", opacity: 0.6, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator style={{ backgroundColor: '#fff', padding: 4, borderRadius: 50 }} size="large" color="#000" />

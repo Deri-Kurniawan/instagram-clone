@@ -1,35 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
-import { initialFeeds, initialUser, initialUsers } from './initialData';
-
-export interface UserProps {
-    id: string,
-    fullname: string,
-    username: string,
-    bio: string,
-    storyIsSeen: boolean,
-    avatar: string,
-    isVerified: boolean,
-    stories: string[] | any[],
-}
-
-export interface CommentProps {
-    author: UserProps,
-    comment: string,
-    content: string,
-    likes: UserProps[],
-}
-
-export interface FeedProps {
-    id: string,
-    author: UserProps,
-    pictures: string[],
-    location: string,
-    caption: string,
-    likes: UserProps[],
-    comments: CommentProps[] | any[],
-    createdAt: string,
-}
-
+import { FeedProps, UserProps, initialFeeds, initialUser, initialUsers } from './initialData';
 
 export interface UseGlobalProps {
     user: UserProps,
