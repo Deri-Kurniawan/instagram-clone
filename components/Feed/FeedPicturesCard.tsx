@@ -27,6 +27,7 @@ const FeedPicturesCard: React.FC<Props> = ({ pictures }) => {
         }}>
             <Image
                 source={{ uri: item }}
+                loadingIndicatorSource={{ uri: item }}
                 style={{ width, aspectRatio: 1 }}
             />
         </View>
