@@ -207,14 +207,14 @@ export const initialFeeds = [
     media: [
       {
         type: "video",
-        src: "https://video.xx.fbcdn.net/v/t42.1790-2/124967384_135609761264070_2398094734569019029_n.mp4?_nc_cat=101&ccb=1-7&_nc_sid=985c63&efg=eyJybHIiOjM1OCwicmxhIjo1MTIsInZlbmNvZGVfdGFnIjoic3ZlX3NkIn0%3D&_nc_eui2=AeEnA6PYIgn-BW9H6izJzXHXgxZHArKaIlODFkcCspoiU8TY_usqzF4v9EzAQSoXQeWQfa59FXmWxWOl_df2Z1VE&_nc_ohc=rFbll4HutTUAX869P0W&rl=358&vabr=199&_nc_ht=scontent-sin6-4.xx&oh=00_AfAByWu7o7L2Y4uoRH1mNyl2YUcdH6u1clzGinOxOv5KHw&oe=640F66D5",
+        src: "https://scontent-sin6-2.xx.fbcdn.net/v/t42.1790-2/125298932_1648141522026994_8948879649664778546_n.mp4?_nc_cat=102&ccb=1-7&_nc_sid=985c63&efg=eyJybHIiOjQyNCwicmxhIjo1MTIsInZlbmNvZGVfdGFnIjoic3ZlX3NkIn0%3D&_nc_eui2=AeE-06OILNd1K_7EBRuCyiX0G1Ty27NKq9QbVPLbs0qr1JOfJCtK9Rp4KFQ1Wu4hbEJRNBdcnYYU4fPa6FyyHE_K&_nc_ohc=tGDR1BXCQ-sAX9wHlXB&rl=424&vabr=236&_nc_ht=scontent-sin6-2.xx&oh=00_AfDvnjJGrnTRnc3hfpDGb7C5RhJCGIs2AhJLuB4HLXISpw&oe=643BADF3",
       },
       {
         type: "video",
-        src: "https://video.xx.fbcdn.net/v/t42.1790-2/125298932_1648141522026994_8948879649664778546_n.mp4?_nc_cat=102&ccb=1-7&_nc_sid=985c63&efg=eyJybHIiOjQyNCwicmxhIjo1MTIsInZlbmNvZGVfdGFnIjoic3ZlX3NkIn0%3D&_nc_eui2=AeE-06OILNd1K_7EBRuCyiX0G1Ty27NKq9QbVPLbs0qr1JOfJCtK9Rp4KFQ1Wu4hbEJRNBdcnYYU4fPa6FyyHE_K&_nc_ohc=mLp6YTcEwrEAX8Zwko8&rl=424&vabr=236&_nc_ht=scontent-sin6-2.xx&oh=00_AfCj-TTKMtNzshVZlvedBuyr_cWT91JhQ4pOXvWCSY9JQQ&oe=640F6793",
+        src: "https://scontent-sin6-4.xx.fbcdn.net/v/t42.1790-2/124967384_135609761264070_2398094734569019029_n.mp4?_nc_cat=101&ccb=1-7&_nc_sid=985c63&efg=eyJybHIiOjM1OCwicmxhIjo1MTIsInZlbmNvZGVfdGFnIjoic3ZlX3NkIn0%3D&_nc_eui2=AeEnA6PYIgn-BW9H6izJzXHXgxZHArKaIlODFkcCspoiU8TY_usqzF4v9EzAQSoXQeWQfa59FXmWxWOl_df2Z1VE&_nc_ohc=Z6-TZAeh9wEAX8UByXg&rl=358&vabr=199&_nc_ht=scontent-sin6-4.xx&oh=00_AfCoTUVfrcnEvMOKFlQ6sbVOfW8hGK3eCPT9ieVMvD4YTA&oe=643BAD35",
       },
     ],
-    location: "Puncak Habibie, Pelabuhan Ratu",
+    location: "Rumah",
     caption: "",
     likes: [initialUsers[3], initialUsers[2]],
     comments: [
