@@ -20,7 +20,7 @@ export default function RootLayout() {
   return (
     <GlobalProvider>
       <Stack screenOptions={{
-        headerTitle: "Instagram",
+        headerTitle: "Instaclone",
         headerTitleStyle: {
           fontFamily: "Billabong",
           fontSize: 40,
